@@ -1,0 +1,111 @@
+{% extends "library_app/base.html" %}
+{% block title %}统计 - 图书管理系统{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fas fa-chart-bar me-2"></i>借阅统计</h3>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="icon"><i class="fas fa-exchange-alt" style="color:#1e3c72;"></i></div>
+            <div class="number">{{ total_borrows }}</div>
+            <div class="label">总借阅次数</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="icon"><i class="fas fa-book-open" style="color:#28a745;"></i></div>
+            <div class="number">{{ active_borrows }}</div>
+            <div class="label">当前借阅中</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="icon"><i class="fas fa-check-circle" style="color:#17a2b8;"></i></div>
+            <div class="number">{{ returned_borrows }}</div>
+            <div class="label">已归还</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="icon"><i class="fas fa-exclamation-circle" style="color:#dc3545;"></i></div>
+            <div class="number">{{ overdue_count }}</div>
+            <div class="label">逾期</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">借阅状态分布</h5></div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>状态</th><th>数量</th></tr></thead>
+                    <tbody>
+                        {% for stat in status_stats %}
+                        <tr>
+                            <td>
+                                {% if stat.status == 'borrowed' %}<span class="badge bg-warning text-dark">借阅中</span>
+                                {% elif stat.status == 'returned' %}<span class="badge bg-secondary">已归还</span>
+                                {% elif stat.status == 'overdue' %}<span class="badge bg-danger">逾期</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ stat.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">热门图书排行榜</h5></div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>排名</th><th>书名</th><th>作者</th><th>借阅次数</th></tr></thead>
+                    <tbody>
+                        {% for book in most_borrowed %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ book.book__title }}</td>
+                            <td>{{ book.book__author }}</td>
+                            <td><span class="badge bg-primary">{{ book.borrow_count }}</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-muted">暂无数据</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header"><h5 class="mb-0">逾期记录</h5></div>
+    <div class="card-body">
+        {% if overdue_books %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead><tr><th>学生</th><th>图书</th><th>借阅日期</th><th>应还日期</th><th>逾期天数</th></tr></thead>
+                <tbody>
+                    {% for record in overdue_books %}
+                    <tr>
+                        <td>{{ record.student.username }}</td>
+                        <td>{{ record.book.title }}</td>
+                        <td>{{ record.borrow_date|date:"Y-m-d" }}</td>
+                        <td>{{ record.due_date|date:"Y-m-d" }}</td>
+                        <td><span class="badge bg-danger">{{ record.days_overdue }} 天</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">暂无逾期记录</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

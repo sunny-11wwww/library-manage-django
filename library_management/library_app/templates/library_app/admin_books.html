@@ -1,0 +1,57 @@
+{% extends "library_app/base.html" %}
+{% block title %}图书管理 - 图书管理系统{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="fas fa-book me-2"></i>图书管理</h3>
+    <a href="{% url 'admin_book_add' %}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>添加图书</a>
+</div>
+
+<form class="mb-4" method="get">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="搜索书名、作者或ISBN..." value="{{ search_query }}">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-search me-1"></i>搜索</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>书名</th>
+                        <th>作者</th>
+                        <th>ISBN</th>
+                        <th>总数量</th>
+                        <th>可借数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.total_quantity }}</td>
+                        <td>
+                            {% if book.available_quantity > 0 %}
+                                <span class="badge bg-success">{{ book.available_quantity }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ book.available_quantity }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'admin_book_edit' book.id %}" class="btn btn-sm btn-warning action-btn"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'admin_book_delete' book.id %}" class="btn btn-sm btn-danger action-btn" onclick="return confirm('确定要删除《{{ book.title }}》吗？')"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-4 text-muted">暂无图书</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
