@@ -1,0 +1,10 @@
+﻿# Railpack configuration for Railway deployment
+[commands]
+  # Build: install dependencies and collect static files
+  build = "cd library_management && pip install -r requirements.txt && python manage.py collectstatic --noinput"
+  # Start: run the Django application with gunicorn
+  start = "cd library_management && gunicorn library_management.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --access-logfile -"
+
+[deploy]
+  # Use Python runtime
+  python = "3.14"
