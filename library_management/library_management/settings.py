@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://library-manage-django-production.up.railway.app',
 ]
-# ????????CSRF?????? 'http://127.0.0.1:8000'
+# 本地开发如需测试CSRF，可在此追加 "http://127.0.0.1:8000"
 
 
 # Application definition
